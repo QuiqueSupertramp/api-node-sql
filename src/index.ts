@@ -1,8 +1,8 @@
 import express from "express"
 import cors from "cors"
 import dotenv from "dotenv"
-import apiRouter from "./app2/router"
 import corsOptions from "../corsConfig"
+import apiRouter from "./app/router"
 
 dotenv.config()
 
