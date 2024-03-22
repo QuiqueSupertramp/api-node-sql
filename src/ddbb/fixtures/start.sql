@@ -36,12 +36,39 @@ CREATE TABLE IF NOT EXISTS seasons (
 	season VARCHAR(9) NOT NULL UNIQUE
 );
 
-CREATE TABLE IF NOT EXISTS teams (
-	id BINARY(16) DEFAULT (UUID_TO_BIN(UUID())),
-    name VARCHAR(100) NOT NULL,
-    season_id INT,
-    UNIQUE (name,season_id),
-	PRIMARY KEY (id),
-    CONSTRAINT fk_season FOREIGN KEY (season_id) REFERENCES seasons(id)
+CREATE TABLE IF NOT EXISTS categories (
+    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    category VARCHAR(50) NOT NULL UNIQUE
 );
-    
+
+CREATE TABLE IF NOT EXISTS leagues (
+    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    league VARCHAR(75) NOT NULL,
+    gender ENUM('masculino', 'femenino', 'mixto') NOT NULL,
+    category_id INT NOT NULL,
+
+    UNIQUE (league, category_id, gender),
+    CONSTRAINT fk_category_leagues FOREIGN KEY (category_id) REFERENCES categories(id)
+);
+
+CREATE TABLE IF NOT EXISTS teams (
+	id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    gender ENUM('masculino', 'femenino', 'mixto') NOT NULL,
+    season_id INT NOT NULL,
+    category_id INT NOT NULL,
+    league_id INT NOT NULL,
+
+    UNIQUE (name, season_id, category_id, gender),
+    CONSTRAINT fk_season_teams FOREIGN KEY (season_id) REFERENCES seasons(id),
+    CONSTRAINT fk_category_teams FOREIGN KEY (category_id) REFERENCES categories(id),
+    CONSTRAINT fk_league_teams FOREIGN KEY (league_id) REFERENCES leagues(id)
+);
+
+CREATE TABLE IF NOT EXISTS players (
+	id INT NOT NULL AUTO_INCREMENT,
+    user_id BINARY(16) NOT NULL,
+
+    PRIMARY KEY (id),
+    CONSTRAINT FK_user_id_players FOREIGN KEY (user_id) REFERENCES users(id)
+);
